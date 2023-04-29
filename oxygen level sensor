@@ -1,0 +1,35 @@
+// include the necessary libraries
+#include <Wire.h>
+
+// define the I2C address of the oxygen level sensor
+#define OXYGEN_SENSOR_ADDR 0x61
+
+void setup() {
+  // start serial communication with the computer
+  Serial.begin(9600);
+  
+  // initialize the I2C bus
+  Wire.begin();
+}
+
+void loop() {
+  // send a command to the oxygen level sensor to get the oxygen level
+  Wire.beginTransmission(OXYGEN_SENSOR_ADDR);
+  Wire.write(0x03);
+  Wire.endTransmission(false);
+  
+  // read the oxygen level from the oxygen level sensor
+  Wire.requestFrom(OXYGEN_SENSOR_ADDR, 2);
+  uint16_t oxygenLevel = Wire.read() << 8 | Wire.read();
+  
+  // convert the oxygen level to percentage
+  float oxygenPercentage = oxygenLevel / 32768.0 * 100.0;
+  
+  // print the oxygen level to the serial monitor
+  Serial.print("Oxygen level: ");
+  Serial.print(oxygenPercentage);
+  Serial.println("%");
+  
+  // wait for 1 second before taking the next oxygen level measurement
+  delay(1000);
+}
