@@ -1,0 +1,36 @@
+// include the necessary libraries
+#include <SoftwareSerial.h>
+
+// define the software serial pins for communication with the pH sensor
+#define RX_PIN 2
+#define TX_PIN 3
+
+// set the baud rate for software serial communication
+#define BAUD_RATE 9600
+
+// create a SoftwareSerial object for communication with the pH sensor
+SoftwareSerial pHSerial(RX_PIN, TX_PIN);
+
+void setup() {
+  // start serial communication with the computer
+  Serial.begin(9600);
+  
+  // start software serial communication with the pH sensor
+  pHSerial.begin(BAUD_RATE);
+}
+
+void loop() {
+  // send a command to the pH sensor to get the pH value
+  pHSerial.write("R");
+  
+  // read the pH value from the pH sensor
+  while (pHSerial.available() == 0); // wait until data is available
+  float pHValue = pHSerial.parseFloat();
+  
+  // print the pH value to the serial monitor
+  Serial.print("pH value: ");
+  Serial.println(pHValue, 2);
+  
+  // wait for 1 second before taking the next pH measurement
+  delay(1000);
+}
